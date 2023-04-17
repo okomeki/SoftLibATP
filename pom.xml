@@ -2,7 +2,8 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.siisise</groupId>
-    <artifactId>SoftLibATP</artifactId>
+    <artifactId>softlib-atp</artifactId>
+    <name>SoftLibATP</name>
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
     <dependencies>
@@ -10,6 +11,12 @@
             <groupId>net.siisise</groupId>
             <artifactId>softlib</artifactId>
             <version>1.1.10-SNAPSHOT</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>net.siisise</groupId>
+            <artifactId>softlib-lexicon</artifactId>
+            <version>1.0-SNAPSHOT</version>
             <type>jar</type>
         </dependency>
         <dependency>
