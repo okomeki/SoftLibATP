@@ -42,20 +42,27 @@ public class Server {
         @required @format("datetime") String usedAt;
     }
 
+    /**
+     * Create an account.
+     * @param session
+     * @param email
+     * @param handle
+     * @param inviteCode
+     * @param password
+     * @param recoveryKey
+     * @return
+     * @throws IOException
+     * @throws RestException 
+     */
     public static JSONObject createAccount(XRPC session, @required String email, @required @format("handle")String handle, String inviteCode, @required String password, String recoveryKey) throws IOException, RestException {
-        JSONObject params = new JSONObject();
-        params.put("email", email);
-        params.put("handle", handle);
-        if ( inviteCode != null ) {
-            params.put("inviteCode", inviteCode);
-        }
-        params.put("password", password);
-        if ( recoveryKey != null ) {
-            params.put("recoveryKey", recoveryKey);
-        }
-        return session.xrpc("com.atproto.server.createAccount", params);
+        return session.req("email", email)
+                .req("handle", handle)
+                .opt("inviteCode", inviteCode)
+                .req("password", password)
+                .opt("recoveryKey", recoveryKey)
+                .xrpc("com.atproto.server.createAccount");
     }
-    
+
     public static JSONObject createInviteCode(XRPC session, int useCount) throws IOException, RestException {
         return session.xrpc("com.atproto.server.createInviteCode", "useCount", ""+useCount);
     }
@@ -95,17 +102,16 @@ public class Server {
     public static void deleteSession(XRPC session) throws IOException, RestException {
         session.xrpc("com.atproto.server.deleteSession");
     }
-    
-    public static JSONObject descriveServer(XRPC session, Boolean inviteCodeRequired, String[] availableUserDomains, Links links) throws IOException, RestException {
-        JSONObject params = new JSONObject();
-        if ( inviteCodeRequired != null) {
-            params.put("inviteCodeRequired", inviteCodeRequired.toString());
-        }
-        params.put("availableUserDomains", availableUserDomains);
-        if ( links != null ) {
-            params.put("links", links);
-        }
-        return session.query("com.atproto.server.describeServer", params);
+
+    /**
+     * 
+     * @param session
+     * @return
+     * @throws IOException
+     * @throws RestException 
+     */
+    public static JSONObject descriveServer(XRPC session) throws IOException, RestException {
+        return session.query("com.atproto.server.describeServer");
     }
     
     public static class Links {

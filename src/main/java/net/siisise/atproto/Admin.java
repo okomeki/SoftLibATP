@@ -199,20 +199,16 @@ public class Admin {
      * @param session
      * @param sort recent または usage
      * @param limit min 1 max 500 default 100
+     * @param cursor
      * @return 
      * @throws java.io.IOException 
      * @throws net.siisise.rest.RestException 
      */
     public static JSONObject getInviteCodes(XRPC session, Sort sort, int limit, String cursor) throws IOException, RestException {
-        JSONObject json = new JSONObject();
-        json.put("sort", sort);
-        if ( limit > 0 ) {
-            json.put("limit", limit);
-        }
-        if ( cursor != null) {
-            json.put("cursor", cursor);
-        }
-        return session.query("com.atproto.admin.getInviteCodes", json);
+        return session.opt("sort", sort)
+                .opt(limit > 0, "limit", limit)
+                .opt("cursor", cursor)
+                .query("com.atproto.admin.getInviteCodes");
     }
     
     /**
@@ -224,67 +220,57 @@ public class Admin {
      * @throws RestException 
      */
     public static void disableInviteCodes(XRPC session, String[] codes, String[] accounts) throws IOException, RestException {
-        JSONObject json = new JSONObject();
-        json.put("codes", codes);
-        json.put("accounts", accounts);
-        session.xrpc("com.atproto.admin.desableInviteCodes", json);
+        session.opt("codes", codes)
+                .opt("accounts", accounts)
+                .xrpc("com.atproto.admin.desableInviteCodes");
     }
     
     public static JSONObject getModerationAction(XRPC session, @required int id) throws IOException, RestException {
-        JSONObject params = new JSONObject();
-        params.put("id", id);
-        return session.query("com.atproto.admin.getModerationAction", params);
+        return session.req("id", id)
+                .query("com.atproto.admin.getModerationAction");
     }
 
     public static JSONObject getModerationActions(XRPC session, String subject, int limit, String cursor) throws IOException, RestException {
-        JSONObject params = new JSONObject();
-        if ( subject != null ) {
-            params.put("subject", subject);
-        }
-        if ( limit > 0 ) {
-            params.put("limit", limit);
-        }
-        if ( cursor != null) {
-            params.put("cursor", cursor);
-        }
-        return session.query("com.atproto.admin.getModerationActions", params);
+        return session.opt("subject", subject)
+                .opt(limit > 0, "limit", limit)
+                .opt("cursor", cursor)
+                .query("com.atproto.admin.getModerationActions");
     }
     
     public static JSONObject getModeratonReport(XRPC session, @required int id) throws IOException, RestException {
-        JSONObject params = new JSONObject();
-        params.put("id", id);
-        return session.query("com.atproto.admin.getModerationReport", params);
+        return session.req("id", id)
+                .query("com.atproto.admin.getModerationReport");
     }
     
     public static JSONObject getModerationReports(XRPC session, String subject, Boolean resolved, int limit, String cursor) throws IOException, RestException {
-        JSONObject params = new JSONObject();
-        if ( subject != null) {
-            params.put("subject", subject);
-        }
-        if ( resolved != null ) {
-            params.put("resolved", resolved);
-        }
-        if ( limit > 0 ) {
-            params.put("limit", limit);
-        }
-        if ( cursor != null ) {
-            params.put("cursor", cursor);
-        }
-        return session.query("com.atproto.admin.getModerationReports", params);
+        return session.opt("subject", subject)
+                .opt("resolved", resolved)
+                .opt(limit > 0, "limit", limit)
+                .opt("cursor", cursor)
+                .query("com.atproto.admin.getModerationReports");
+    }
+    
+    public static JSONObject resolveModerationReports(XRPC session, @required int actorId, @required int[] reportIds, @required @format("did")String createdBy) throws IOException, RestException {
+        return session.req("actorId", actorId)
+                .req("reportIds", reportIds)
+                .req("createdBy", createdBy)
+                .xrpc("com.atproto.admin.resolveModerationReports");
+    }
+    
+    public static JSONObject reverseModerationAction(XRPC session, @required int id, @required String reason, @required @format("did")String createdBy) throws IOException, RestException {
+        return session.req("id", id)
+                .req("reason", reason)
+                .req("createdBy", createdBy)
+                .xrpc("com.atproto.admin.reverseModreationAction");
     }
     
     public static JSONObject getRecord(XRPC session, @required @format("at-uri") String uri, @format("cid") String cid) throws IOException, RestException {
-        JSONObject params = new JSONObject();
-        params.put("uri", uri);
-        if ( cid != null ) {
-            params.put("cid", cid);
-        }
-        return session.query("com.atproto.admin.getRecord", params);
+        return session.req("uri", uri)
+                .opt("cid", cid)
+                .query("com.atproto.admin.getRecord");
     }
     
     public static JSONObject getRepo(XRPC session, @required @format("did") String did) throws IOException, RestException {
-        JSONObject params = new JSONObject();
-        params.put("did", did);
-        return session.query("com.atproto.admin.getRepo", params);
+        return session.req("did",did).query("com.atproto.admin.getRepo");
     }
 }

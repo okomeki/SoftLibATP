@@ -15,15 +15,50 @@
  */
 package net.siisise.atproto;
 
+import java.io.IOException;
+import net.siisise.atp.XRPC;
+import net.siisise.atp.lexicon.format;
+import net.siisise.atp.lexicon.maxLength;
+import net.siisise.atp.lexicon.required;
+import net.siisise.json.JSONObject;
+import net.siisise.rest.RestException;
+
 /**
  *
  */
 public class Label {
 
-    static class label {
-
-        public label() {
-        }
+    /**
+     * Metadata tag on an atproto resource (eg, repo or record)
+     */
+    public static class label {
+        @required @format("did") String src;
+        @required @format("uri") String uri;
+        @format("cid") String cid;
+        @required @maxLength(128) String val;
+        Boolean neg;
+        @required @format("datetime") String cts;
     }
     
+    public static JSONObject queryLabels(XRPC session, @required String[] uriPatterns, @format("did")String[] sources, int limit, String cursor) throws IOException, RestException {
+        return session.req("uriPattern", uriPatterns)
+                .opt("sources", sources)
+                .opt(limit > 0, "limit", limit)
+                .opt("cursor", cursor)
+                .query("com.atproto.label.queryLabel");
+    }
+    
+    /**
+     * @deprecated よくわからない形式
+     * @param session
+     * @param cursor
+     * @return
+     * @throws IOException
+     * @throws RestException 
+     */
+    /*
+    public static JSONObject subscribeLabels(XRPC session, int cursor) throws IOException, RestException {
+        session.opt("cursor", cursor)
+                .query("com.atproto.label.subscribeLabel");
+    }*/
 }

@@ -31,14 +31,12 @@ public class Identity {
      * @param session
      * @param handle
      * @return 
+     * @throws java.io.IOException 
+     * @throws net.siisise.rest.RestException 
      */
     public static JSONObject resolveHandle(XRPC session, @format("handle") String handle) throws IOException, RestException {
-        JSONObject param = new JSONObject();
-        if ( handle != null ) {
-            param.put("handle", handle);
-        }
-        JSONObject out = session.query("com.atproto.identity.resolveHandle", param);
-        return out;
+        return session.opt("handle", handle)
+                .query("com.atproto.identity.resolveHandle");
     }
 
     /**
@@ -49,9 +47,7 @@ public class Identity {
      * @throws net.siisise.rest.RestException 
      */
     public static void updateHandle(XRPC session, @required @format("handle")String handle) throws IOException, RestException {
-        JSONObject param = new JSONObject();
-        param.put("handle", handle);
-        session.xrpc("com.atproto.identity.updateHandle", param);
+        session.req("handle", handle).xrpc("com.atproto.identity.updateHandle");
     }
     
     
